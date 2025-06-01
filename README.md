@@ -1,9 +1,8 @@
-# Progetto di Controllo avanzato multivariabile 2025
-## Progettazione di un MPC per il controllo del livello dell’acqua in quattro serbatoi interconnessi
+# Progettazione di un MPC per il controllo del livello dell’acqua in quattro serbatoi interconnessi
 
 Il quadruple tank process è un sistema multivariabile composto da serbatoi interconnessi che viene spesso utilizzato come benchmark per controllori MPC, date la non-linearità della sua dinamica e la necessità di definire dei vincoli sulle sue variabili di stato.
 
-### 1 Descrizione del problema
+## 1. Descrizione del problema
 Si controlli il livello dell’acqua nei quattro serbatoi interconnessi riportati in figura 1.
 
 ![image](https://github.com/user-attachments/assets/733e57e7-1867-48fb-be24-cd1afd9983ff)
@@ -40,7 +39,7 @@ I livelli dell’acqua nei serbatoi devono sempre rimanere nel range [0.5cm, 20c
 Gli ingressi controllati del sistema sono le tensioni applicate alle due pompe.
 
 
-### 2 Obiettivi
+## 2. Obiettivi
 L’obiettivo del lavoro è progettare un controllore MPC in grado di portare il sistema dalla condizione
 iniziale (h1, h2, h3, h4) = (1.3767, 2.2772, 0.8386, 0.5604) all’equilibrio (7.8253, 18.7323, 3.3545, 7.8801),
 rispettando sempre i vincoli, e simulare il funzionamento del sistema in anello chiuso.
