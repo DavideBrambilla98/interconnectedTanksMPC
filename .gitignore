@@ -1,0 +1,54 @@
+
+# File temporanei e di backup
+*.asv
+*.autosave
+*.bak
+*.tmp
+*.swp
+
+# File generati da MATLAB
+*.mex*
+*.mlappinstall
+*.mlpkginstall
+*.slxc
+*.slx
+*.mdl.rtw
+*.log
+*.mat
+*.fig
+*.p
+*.mexw64
+*.mexmaci64
+*.mexa64
+
+# Cartelle di cache e build
+slprj/
+sfprj/
+codegen/
+_work/
+.simulink/
+
+# File di sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# File di progetto MATLAB
+*.prj
+*.mlproj
+*.mldatx
+*.mexa64
+*.mexmaci64
+*.mexw32
+*.mexw64
+*.rpt
+*.xvc
+*.xprj
+*.xproj
+*.xcworkspace
+*.xcodeproj
+
+# File di configurazione personale
+*.settings
+*.idea/
+*.vscode/
