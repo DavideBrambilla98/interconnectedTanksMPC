@@ -149,9 +149,3 @@ Hx = [eye(4); -eye(4)];
 hx = [ones(8,1)] .* X_vinc_lin;
 Hu = [eye(2); -eye(2)];   
 hu = [ones(4,1)] .* U_vinc_lin;
-
-%% Invariant Set
-
-%% Progettazione MPC
-
-
