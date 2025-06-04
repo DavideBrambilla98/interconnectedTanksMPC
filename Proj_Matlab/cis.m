@@ -22,7 +22,7 @@ h = [hx;hu + Hu*(K*x_ref - u_ref)];
 
 %   Calcolo del CIS (G*x <= g)
 CIS_poly_curr = Polyhedron(H, h);
-primaIterazione= 1;
+primaIterazione = 1;
 i = 0;
 tic;
 while  primaIterazione || CIS_poly_prev ~= CIS_poly_curr 

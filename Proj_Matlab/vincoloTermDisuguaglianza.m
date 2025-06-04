@@ -21,47 +21,21 @@ Q = eye(4); % Penalizza lo stato (4 stati: h1,h2,h3,h4)
 R = eye(2); % Penalizza l'ingresso (2 ingressi: v1,v2)
 
 % Control invariant set CIS_H*x <= CIS_h
-[CIS_H, CIS_h] = cis(sys_discretizzato.A, sys_discretizzato.B, x_ref, u_ref, Hx, hx, Hu, hu, Q, R);
+[CIS_H, CIS_h] = cis(sys_d.A, sys_d.B, zeros(4,1), zeros(2,1), Hx, hx, Hu, hu, Q, R);
 CIS = Polyhedron(CIS_H, CIS_h);
 
-
-% Costruzione del CIS
+%% Plot del CIS
 CIS_G = Polyhedron(CIS_H, CIS_h);
-CIS_G.minHRep(); % Riduzione alla rappresentazione minimale
+CIS_G = minHRep(CIS_G);
 
-% Proiezione su h1 e h2
-CIS_G_h12 = CIS_G.projection([1 2]);
+CIS_G_H12 = projection(CIS_G, 1:2);
+CIS_G_H34 = projection(CIS_G, 3:4);
 
-% Proiezione su h3 e h4
-CIS_G_h34 = CIS_G.projection([3 4]);
-
-% Plot delle proiezioni
-figure;
-
-subplot(1, 2, 1);
-plot(CIS_G_h12);
-title("Proiezione del CIS su h1 e h2");
-xlabel("h1 [cm]", 'Interpreter', 'latex');
-ylabel("h2 [cm]", 'Interpreter', 'latex');
-xlim([-10 10])
-ylim([-10 10])
-grid on;
-
-subplot(1, 2, 2);
-plot(CIS_G_h34);
-title("Proiezione del CIS su h3 e h4");
-xlabel("h3 [cm]", 'Interpreter', 'latex');
-ylabel("h4 [cm]", 'Interpreter', 'latex');
-xlim([-10 10])
-ylim([-10 10])
-grid on;
-
-
-V = CIS_G_h12.V;
-disp('Vertici della proiezione su h1 e h2:');
-disp(V);
-
-
-
-
-
+figure
+subplot(1 , 2 , 1)
+CIS_G_H12.plot();
+title("Proiezione del CIS dei livelli dei serbatoi 1 e 2")
+xlim([-20 20])
+ylim([-20 20])
+xlabel("h1" , Interpreter="latex")
+ylabel("h2" , Interpreter="latex")
