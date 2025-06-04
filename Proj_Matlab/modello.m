@@ -30,28 +30,34 @@ u = [0, 0];
 % Definizione obiettivi di controllo
 x_start = [1.3767, 2.2772, 0.8386, 0.5604]';    %cond. iniziale
 x_ref = [7.8253, 18.7323, 3.3545, 7.8801]';     %equilibrio
-u_ref = [0, 0]';
 
-%% Equazioni dinamiche del sistema
+% Calcolo delle tensioni di equilibrio
+u2_ref = (a(3) * sqrt(2 * g * x_ref(3))) / ((1 - gamma(2)) * k(2));
+u1_ref = (a(4) * sqrt(2 * g * x_ref(4))) / ((1 - gamma(1)) * k(1));
+
+u_ref = [u1_ref, u2_ref]';
+
+disp('Tensioni di equilibrio u_ref:');
+disp(u_ref);
 
 %% Simulazione del sistema
 
-simulazione = 100 * 10; % durata simulazione in secondi
+simulazione = 60*20; % durata simulazione in secondi
 
 % Definizione dell'ODE
 dxdt = @(t, x) livSerbatoi(t, x, A, a, k, gamma, g, u);
 
-%simulazione del comportamento del sistema
+% Simulazione del comportamento del sistema
 [tt, xx] = ode45(dxdt, linspace(0, simulazione, simulazione+1), x_start);
 
 % Conversione tempo in minuti
 tt = tt / 60;
 
-%plot simulazione (traiettorie)
+% Plot simulazione (traiettorie)
 figure
 sgtitle("Simulazione del Quadruple Tank Process con controllo tensione alle pompe") 
 
-% livelli nei serbatoi
+% Livelli nei serbatoi
 subplot(2,1,1)
 plot(tt, xx(:, 1:4), 'LineWidth', 1.5);
 hold on
@@ -77,19 +83,13 @@ F = [h1_dot; h2_dot; h3_dot; h4_dot];
 stati = [h1 h2 h3 h4];
 ingressi = [u1 u2];
 
-%jacobiane
-A_sim = jacobian(F, stati);
-B_sim = jacobian(F, ingressi);
+% Jacobiane
+A_sim(h1,h2,h3,h4) = jacobian(F, stati);
+B_sim(u1,u2) = jacobian(F, ingressi);
 
-%valutazione nell'equilibrio
-
-A_lin = double(subs(A_sim, [h1, h2, h3, h4, u1, u2], [x_ref(1), x_ref(2), x_ref(3), x_ref(4), u_ref(1), u_ref(2)]));
-B_lin = double(subs(B_sim, [h1, h2, h3, h4, u1, u2], [x_ref(1), x_ref(2), x_ref(3), x_ref(4), u_ref(1), u_ref(2)]));
-
-%emilio aveva fatto come sotto(non mi funziona), ho utilizzato il comando
-%subs che va a sostituire i parametri con i valori effettivi
-%A_lin = double(A_sim(x_ref(1) , x_ref(2) , x_ref(3) ,x_ref(4)));
-%B_lin = double(B_sim(u_ref(1) , u_ref(2)));
+% Valutazione nell'equilibrio
+A_lin = double(A_sim(x_ref(1) , x_ref(2) , x_ref(3) ,x_ref(4)));
+B_lin = double(B_sim(u_ref(1) , u_ref(2)));
 
 C_lin = eye(4);
 D_lin = zeros(4,2);
@@ -106,7 +106,7 @@ disp(eig(A_lin));
 
 %% Discretizzazione
 
-Ts = 0.1; % tempo di campionamento [s]
+Ts = 1; % tempo di campionamento [s]
 sys_discretizzato = c2d(sys_lineare, Ts);
 
 fprintf('\n--- Stabilità del sistema discretizzato ---\n');
@@ -145,7 +145,7 @@ U_vinc_lin = U_vinc - [u_ref; u_ref];
 
 % Matrici dei vincoli: Hx * x <= hx e Hu * u <= hu
 
-Hx = [eye(4); -eye(4)];  
-hx = [ones(8,1)] .* X_vinc_lin;
-Hu = [eye(2); -eye(2)];   
-hu = [ones(4,1)] .* U_vinc_lin;
+Hx = [eye(4); -eye(4)];
+hx = X_vinc_lin;
+Hu = [eye(2); -eye(2)];
+hu = U_vinc_lin;
