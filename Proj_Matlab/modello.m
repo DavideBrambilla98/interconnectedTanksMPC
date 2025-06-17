@@ -7,14 +7,14 @@ set(0,'defaulttextInterpreter','latex')
 rng('default');
 
 %% Parametri fisici del sistema
-g = 981;                         % [cm/s^2] gravità
-A = [28, 32, 28, 32];            % [cm^2] sezione dei serbatoi
-a = [0.071, 0.057, 0.071, 0.057];% [cm^2] sezione fori
-k = [2.7, 3.2];                  % [cm^3/(s·V)] costanti delle pompe
-gamma = [0.3, 0.4];             % suddivisione flussi
+g = 981; % [cm/s^2] gravità
+A = [28, 32, 28, 32]; % [cm^2] sezione dei serbatoi
+a = [0.071, 0.057, 0.071, 0.057]; % [cm^2] sezione fori
+k = [2.7, 3.2]; % [cm^3/(s·V)] costanti delle pompe
+gamma = [0.3, 0.4]; % suddivisione flussi
 
 % Tensione nominale (esempio, non usata direttamente)
-u_nom = [0.375, 0.3]';          
+u_start = [0,0]';          
 
 %% Stato iniziale e di riferimento
 x_start = [1.3767, 2.2772, 0.8386, 0.5604]';         % stato iniziale
@@ -33,7 +33,7 @@ disp(u_ref);
 sim_time = 60*2; % durata simulazione [s]
 
 % ODE del sistema
-dxdt = @(t, x) livSerbatoi(t, x, A, a, k, gamma, g, u_nom); % NB: usa u_nom fissa
+dxdt = @(t, x) livSerbatoi(t, x, A, a, k, gamma, g, u_start);
 
 % Integrazione numerica
 [tt, xx] = ode45(dxdt, linspace(0, sim_time, sim_time+1), x_start);
@@ -132,3 +132,5 @@ hx = [x_max_lin; -x_min_lin];
 
 Hu = [eye(2); -eye(2)];
 hu = [u_max_lin; -u_min_lin];
+
+
