@@ -59,22 +59,18 @@ ylabel("$h_4$" , Interpreter="latex")
 %% N-step controllable set
 
 % Orizzonte di predizione
-N = 5;
+N = 1;
+
+fprintf('\n--- Calcolo del %d-step controllable set ---\n', N);
 
 [Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
+fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
 
-Np_steps_set = Polyhedron('A', Np_steps_H, 'b', Np_steps_h);
-figure(2)
-h_cis = CIS.plot();
-hold on
-h_nsteps = Np_steps_set.plot('Alpha', 0, 'LineWidth', 2);
-title(sprintf('\textbf{CIS e %d-step-controllable set del sistema linearizzato}', N))
-xlabel('$\theta$ [rad]')
-ylabel('$\dot{\theta}$ [rad/s]')
-xlim([-pi pi])
-ylim([-2 2])
-legend([h_cis, h_nsteps], ...
-    {'CIS', sprintf('%d-step set', N)},...
-    'Interpreter','latex')
+% Costruzione poliedro
+Np_steps_set = Polyhedron(Np_steps_H, Np_steps_h);
+Np_steps_set = Np_steps_set.minHRep();
 
+%% plot
+Np_steps_H12 = projection(Np_steps_set , 1:2);
+Np_steps_H34 = projection(Np_steps_set , 3:4);
 %% MPC e simulazione

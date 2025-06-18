@@ -6,6 +6,9 @@ set(0,'DefaultFigureWindowStyle', 'docked')
 set(0,'defaulttextInterpreter','latex')
 rng('default');
 
+%richiamo funzioni
+addpath('funzioni');
+
 %% Parametri fisici del sistema
 g = 981; % [cm/s^2] gravità
 A = [28, 32, 28, 32]; % [cm^2] sezione dei serbatoi

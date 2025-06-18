@@ -7,14 +7,13 @@ function [H_nsteps, h_nsteps] = controllable_set(Hx, hx, Hu, hu, H_target, h_tar
 %   A, B → dinamica del sistema
 
 n = size(A,2);
-m = size(B,2);
 
-%   Candidato iniziale
+% target iniziale
 H_ii_steps = H_target;
 h_ii_steps = h_target;
 
 for ii=1:N
-    %   Computazione in R^(n+m)
+    %set ad un passo rispetto a quello preceente
     temp = Polyhedron('A',[H_ii_steps*A H_ii_steps*B; ...
         zeros(size(Hu,1),n) Hu],'b',[h_ii_steps; hu]);
     %   Proiezione in R^n
@@ -23,6 +22,7 @@ for ii=1:N
     %   Intersezione con X := {x | Hx*x <= hx}
     H_ii_steps = [temp.A; Hx];
     h_ii_steps = [temp.b; hx];
+    
 end
 
 H_nsteps = H_ii_steps;
