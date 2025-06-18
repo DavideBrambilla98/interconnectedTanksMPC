@@ -13,7 +13,8 @@ rng('default');
 Ts = 60; %[s]
 
 % Richiamo del modello del sistema dei serbatoio interconnessi
-modello
+addpath('funzioni');
+modello;
 
 % Matrici del costo quadratico
 Q = 1e1*eye(4); % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
@@ -54,3 +55,26 @@ grid on
 axis equal
 xlabel("$h_3$" , Interpreter="latex")
 ylabel("$h_4$" , Interpreter="latex")
+
+%% N-step controllable set
+
+% Orizzonte di predizione
+N = 5;
+
+[Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
+
+Np_steps_set = Polyhedron('A', Np_steps_H, 'b', Np_steps_h);
+figure(2)
+h_cis = CIS.plot();
+hold on
+h_nsteps = Np_steps_set.plot('Alpha', 0, 'LineWidth', 2);
+title(sprintf('\textbf{CIS e %d-step-controllable set del sistema linearizzato}', N))
+xlabel('$\theta$ [rad]')
+ylabel('$\dot{\theta}$ [rad/s]')
+xlim([-pi pi])
+ylim([-2 2])
+legend([h_cis, h_nsteps], ...
+    {'CIS', sprintf('%d-step set', N)},...
+    'Interpreter','latex')
+
+%% MPC e simulazione
