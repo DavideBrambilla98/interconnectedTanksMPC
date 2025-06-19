@@ -23,10 +23,10 @@ R = 1e3*eye(2); % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 
 % Control invariant set CIS_H*x <= CIS_h
 [CIS_H, CIS_h] = cis(sys_d.A, sys_d.B, zeros(4,1), zeros(2,1), Hx, hx, Hu, hu, Q, R); % si passano zeri come riferimento poichè il sistema è traslato sul riferimento
 CIS = Polyhedron(CIS_H, CIS_h);
-
+%
 %% Plot del CIS
 CIS_G = Polyhedron(CIS_H, CIS_h);
-
+CIS_G = CIS_G.minHRep();
 CIS_G_H12 = projection(CIS_G, 1:2);
 CIS_G_H34 = projection(CIS_G, 3:4);
 
@@ -58,19 +58,19 @@ ylabel("$h_4$" , Interpreter="latex")
 
 %% N-step controllable set
 
-% Orizzonte di predizione
-N = 1;
+% Orizzonte di predizione fissato
+%N = 1;
+%fprintf('\n--- Calcolo del %d-step controllable set ---\n', N);
+%[Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
+%fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
 
-fprintf('\n--- Calcolo del %d-step controllable set ---\n', N);
-
-[Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
-fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
+[Np_steps_H, Np_steps_h , Np] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, x0_centrato);
 
 % Costruzione poliedro
 Np_steps_set = Polyhedron(Np_steps_H, Np_steps_h);
 Np_steps_set = Np_steps_set.minHRep();
 
 %% plot
-Np_steps_H12 = projection(Np_steps_set , 1:2);
-Np_steps_H34 = projection(Np_steps_set , 3:4);
+
+
 %% MPC e simulazione

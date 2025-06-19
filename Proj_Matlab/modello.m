@@ -123,17 +123,33 @@ x_min = X_bounds(1) * ones(4,1);
 u_max = U_bounds(2) * ones(2,1);
 u_min = U_bounds(1) * ones(2,1);
 
-% Vincoli centrati
-x_max_lin = x_max - x_ref;
-x_min_lin = x_min - x_ref;
-u_max_lin = u_max - u_ref;
-u_min_lin = u_min - u_ref;
 
-% Matrici vincoli: Hx*x <= hx
-Hx = [eye(4); -eye(4)];
-hx = [x_max_lin; -x_min_lin];
+h12_bounds = X_bounds;  % [min, max] per h1 e h2
+h34_bounds = X_bounds;  % [min, max] per h3 e h4
 
-Hu = [eye(2); -eye(2)];
-hu = [u_max_lin; -u_min_lin];
+% Creazione vincoli: max (prime righe), min (ultime righe)
+X_vinc = [
+    h12_bounds(2)*ones(2,1);  % h1 e h2 max
+    h34_bounds(2)*ones(2,1);  % h3 e h4 max
+    h12_bounds(1)*ones(2,1);  % h1 e h2 min
+    h34_bounds(1)*ones(2,1)   % h3 e h4 min
+];
+
+% Vincoli sugli ingressi (u1, u2)
+U_vinc = [
+    U_bounds(2)*ones(2,1);  % u1 e u2 max
+    U_bounds(1)*ones(2,1)   % u1 e u2 min
+];
+
+% Calcoliamo i vincoli centrati nel punto di equilibrio
+X_vinc_lin = X_vinc - repmat(x_ref, 2, 1);  % duplica x_ref
+U_vinc_lin = U_vinc - repmat(u_ref, 2, 1);  % duplica u_ref
+
+% Definizione delle matrici H per i vincoli Hx*x <= hx
+Hx = [eye(4); -eye(4)];  % 8 vincoli (4 max + 4 min)
+hx = [ones(4,1); -ones(4,1)] .* X_vinc_lin;
+
+Hu = [eye(2); -eye(2)];  % 4 vincoli (2 max + 2 min)
+hu = [ones(2,1); -ones(2,1)] .* U_vinc_lin;
 
 
