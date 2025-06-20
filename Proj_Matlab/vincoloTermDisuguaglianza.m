@@ -84,4 +84,5 @@ ylabel("$h_4$" , Interpreter="latex")
 legend([h_cis_24, h_nsteps_24], ...
     {'CIS', sprintf('%d-step set', N)},...
     'Interpreter','latex')
-%% MPC e simulazione
+%% MPC
+
