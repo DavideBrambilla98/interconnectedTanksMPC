@@ -9,22 +9,18 @@ rng('default');
 
 %% Invariant set per il sistema controllato
 
-% Tempo di campionamento
-Ts = 2; %[s]
-
 % Richiamo del modello del sistema dei serbatoio interconnessi
 addpath('funzioni');
 modello;
 
 % Matrici del costo quadratico
-Q = 20*eye(4); % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
-R = 1*eye(2); % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
-Q = diag([10, 10, 1, 1]); % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
-R = diag([0.1, 0.1]); % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
+Q = 100*eye(4); % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
+R = eye(2); % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
 % Control invariant set CIS_H*x <= CIS_h
 [CIS_H, CIS_h] = cis(sys_d.A, sys_d.B, zeros(4,1), zeros(2,1), Hx, hx, Hu, hu, Q, R); % si passano zeri come riferimento poichè il sistema è traslato sul riferimento
 
 %% Plot del CIS
+
 CIS_G = Polyhedron(CIS_H, CIS_h);
 CIS_G = CIS_G.minHRep();
 CIS_G_H13 = projection(CIS_G, [1,3]);
@@ -55,17 +51,37 @@ ylabel("$h_4$" , Interpreter="latex")
 %% N-step controllable set
 
 % Orizzonte di predizione fissato
-N = 1;
+N = 5;
 fprintf('\n--- Calcolo del %d-step controllable set ---\n', N);
 [Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
 fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
-
-% [Np_steps_H, Np_steps_h , Np] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, x0_centrato);
 
 % Costruzione poliedro
 Np_steps_set = Polyhedron(Np_steps_H, Np_steps_h);
 Np_steps_set = Np_steps_set.minHRep();
 
-%% plot
-
+% Plot N-step-controllable set
+figure()
+subplot(1 , 2 , 1)
+h_cis_24 = CIS_G_H13.plot();
+h_nsteps_24 = projection(Np_steps_set, [1,3]);
+hold on
+h_nsteps_24 = h_nsteps_24.plot('Alpha', 0, 'LineWidth', 2);
+title(sprintf('CIS e %d-step controllable set del sistema linearizzato H1-H3: %d\n', N))
+xlabel("$h_1$" , Interpreter="latex")
+ylabel("$h_3$" , Interpreter="latex")
+legend([h_cis_24, h_nsteps_24], ...
+    {'CIS', sprintf('%d-step set', N)},...
+    'Interpreter','latex')
+subplot(1 , 2 , 2)
+h_cis_24 = CIS_G_H24.plot();
+h_nsteps_24 = projection(Np_steps_set, [2,4]);
+hold on
+h_nsteps_24 = h_nsteps_24.plot('Alpha', 0, 'LineWidth', 2);
+title(sprintf('CIS e %d-step controllable set del sistema linearizzato H2-H4: %d\n', N))
+xlabel("$h_2$" , Interpreter="latex")
+ylabel("$h_4$" , Interpreter="latex")
+legend([h_cis_24, h_nsteps_24], ...
+    {'CIS', sprintf('%d-step set', N)},...
+    'Interpreter','latex')
 %% MPC e simulazione
