@@ -33,10 +33,10 @@ disp(u_ref);
 
 %% Simulazione del sistema non lineare
 
-sim_time = 60*2; % durata simulazione [s]
+sim_time = 60*20; % durata simulazione [s]
 
 % ODE del sistema
-dxdt = @(t, x) livSerbatoi(t, x, A, a, k, gamma, g, u_start);
+dxdt = @(t, x) livSerbatoi(t, x, A, a, k, gamma, g, u_ref);
 
 % Integrazione numerica
 [tt, xx] = ode45(dxdt, linspace(0, sim_time, sim_time+1), x_start);
