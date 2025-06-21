@@ -84,5 +84,9 @@ ylabel("$h_4$" , Interpreter="latex")
 legend([h_cis_24, h_nsteps_24], ...
     {'CIS', sprintf('%d-step set', N)},...
     'Interpreter','latex')
-%% MPC
 
+%% MPC
+T_sim = 60;
+mpc = MPC(sys_d.A,sys_d.B,Hx,hx,Hu,hu,CIS_H,CIS_h,x_ref,u_ref,Q,R,N);
+
+%% plot risultati

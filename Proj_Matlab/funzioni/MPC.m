@@ -1,4 +1,4 @@
-function mpc = mpc_ingredients(A,B,Hx,hx,Hu,hu,CIS_H,CIS_h,x_ref,u_ref,Q,R,Np)
+function mpc = MPC(A,B,Hx,hx,Hu,hu,CIS_H,CIS_h,x_ref,u_ref,Q,R,Np)
 
 %dimensioni
 n = size(A,2);      %numero stati
@@ -6,7 +6,7 @@ m = size(B,2);      %numero ingressi
 n_ter = length(CIS_h);   %numero di righe del vincolo terminale
 
 %matrice costo terminale
-[~, P, ~] = dlqr(A, B, Q, R);
+[~, P] = dlqr(A, B, Q, R);
 
 % Traslare i vincoli rispetto al riferimento
 % Vincoli sullo stato traslato
@@ -19,7 +19,7 @@ hu_shifted = hu - Hu*u_ref;
 
 %richiamo a funzione function [A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A , B , Q , R , riccati , N)
 
-[A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A , B , Q , R , P , Np)
+[A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A ,B , Q , R , P , Np)
 
 %   Matrice hessiana costo quadratico
 F = B_cal'*Q_cal*B_cal + R_cal;

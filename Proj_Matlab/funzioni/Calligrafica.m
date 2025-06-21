@@ -3,7 +3,9 @@ function [A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A , B
     %inizzializzazione matrici
     A_cal = [];
     B_cal = [];
-    
+
+    %matrice costo terminale
+    [~, P] = dlqr(A, B, Q, R);
     for i = 0:N
         mat = A^i;
         % Costruzione di A_cal da A_cal_0 a A_cal_n (stato dopo n passi)
@@ -37,7 +39,7 @@ function [A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A , B
     R_cal = kron(eye(N), R); %kron ripete R lungo la diagonale N volte  
 
     %Costruzione Q_cal
-    Q_cal = diagonale(Q, S, N+1);
+    Q_cal = diagonale(Q, P, N+1);
 end
 
 
