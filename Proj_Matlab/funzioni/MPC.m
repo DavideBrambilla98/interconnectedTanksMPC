@@ -11,18 +11,19 @@ n_ter = length(CIS_h);   %numero di righe del vincolo terminale
 % Traslare i vincoli rispetto al riferimento
 % Vincoli sullo stato traslato
 Hx_shifted = Hx;
-hx_shifted = hx - Hx*x_ref;
+hx_shifted = hx;
 
 % Vincoli per l'ingresso
 Hu_shifted = Hu;
-hu_shifted = hu - Hu*u_ref;
+hu_shifted = hu;
 
 %richiamo a funzione function [A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A , B , Q , R , riccati , N)
 
 [A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A ,B , Q , R , P , Np);
 
 %   Matrice hessiana costo quadratico
-F = B_cal'*Q_cal*B_cal + R_cal;
+F = (B_cal'*Q_cal*B_cal + R_cal);
+F = (F + F') / 2;
 
 %   Componente lineare costo quadratico
 f = B_cal' * Q_cal * A_cal;

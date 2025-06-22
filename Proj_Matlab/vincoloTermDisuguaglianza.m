@@ -89,6 +89,7 @@ legend([h_cis_24, h_nsteps_24], ...
 T_sim = 60;
 mpc = MPC(sys_d.A,sys_d.B,Hx,hx,Hu,hu,CIS_H,CIS_h,x_ref,u_ref,Q,R,N);
 
+    
 %% Verifica dei vincoli
 
 disp('--- Verifica vincoli MPC ---');
@@ -134,9 +135,14 @@ for tt = 1:T_sim
 
     % Risoluzione del problema di ottimizzazione
     [delta_u_seq, ~, exitflag] = quadprog(mpc.F, f, mpc.A_ineq, b_ineq);
-
     flags(tt) = exitflag;
-    delta_u_seq_first = delta_u_seq(1:2); % per estrarre il primo passo temporale dei 2 ingressi
+    
+    if isempty(delta_u_seq) || exitflag <= 0
+        warning("Quadprog non ha trovato una soluzione ammissibile al passo %d (exitflag = %d)", tt, exitflag);
+        delta_u_seq_first = zeros(2,1); % oppure: break; % per fermare la simulazione
+    else
+        delta_u_seq_first = delta_u_seq(1:2); % usa solo se esiste una soluzione
+    end
 
     % Avanzamento/Risposta del sistema
     u_log(:,tt) = u_ref + delta_u_seq_first;
