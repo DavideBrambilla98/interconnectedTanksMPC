@@ -19,7 +19,7 @@ hu_shifted = hu - Hu*u_ref;
 
 %richiamo a funzione function [A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A , B , Q , R , riccati , N)
 
-[A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A ,B , Q , R , P , Np)
+[A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A ,B , Q , R , P , Np);
 
 %   Matrice hessiana costo quadratico
 F = B_cal'*Q_cal*B_cal + R_cal;
@@ -35,7 +35,7 @@ Hx_tilde = [Hx_tilde; zeros(n_ter, Np*n), CIS_H];
 hx_tilde = [hx_tilde; CIS_h];
 
 Hu_tilde = kron(eye(Np), Hu_shifted);
-hu_tilde = repmat(hu, [Np, 1]);
+hu_tilde = repmat(hu_shifted, [Np, 1]);
 
 % Set ammissibili di ingresso (inequalities)
 A_ineq = [Hx_tilde*B_cal; Hu_tilde];
