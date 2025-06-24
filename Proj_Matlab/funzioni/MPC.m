@@ -8,7 +8,7 @@ n_ter = length(CIS_h);   %numero di righe del vincolo terminale
 %matrice costo terminale
 [~, P] = dlqr(A, B, Q, R);
 
-% Traslare i vincoli rispetto al riferimento
+
 % Vincoli sullo stato traslato
 Hx_shifted = Hx;
 hx_shifted = hx;
