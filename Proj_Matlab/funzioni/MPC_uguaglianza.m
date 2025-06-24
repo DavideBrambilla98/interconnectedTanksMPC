@@ -1,20 +1,13 @@
-function mpc = MPC_uguaglianza(A,B,Hx,hx,Hu,hu,CIS_H,CIS_h,x_ref,u_ref,Q,R,Np)
+function mpc = MPC_uguaglianza(A, B, Hx, hx, Hu, hu, x_ref, u_ref, Q, R, Np)
 
 % Dimensioni
-n = size(A,2);      % numero stati
-m = size(B,2);      % numero ingressi
+n = size(A, 2);
+m = size(B, 2);
 
-% Matrice costo terminale
 [~, P] = dlqr(A, B, Q, R);
 
-% Vincoli sullo stato traslato
-Hx_shifted = Hx; hx_shifted = hx;
-
-% Vincoli per l'ingresso
-Hu_shifted = Hu; hu_shifted = hu;
-
-% Matrici estese
-[A_cal, A_cal_n, B_cal, B_cal_n, Q_cal, R_cal] = Calligrafica(A, B, Q, R, P, Np);
+% Matrici estese 
+[A_cal , A_cal_n ,B_cal , B_cal_n , Q_cal , R_cal] = Calligrafica(A ,B , Q , R , P , Np);
 
 % Matrice hessiana del costo
 F = (B_cal' * Q_cal * B_cal + R_cal);
@@ -24,6 +17,9 @@ F = (F + F') / 2;
 f = B_cal' * Q_cal * A_cal;
 
 % Vincoli di disuguaglianza
+Hx_shifted = Hx; hx_shifted = hx;
+Hu_shifted = Hu; hu_shifted = hu;
+
 Hx_tilde = kron(eye(Np+1), Hx_shifted);
 hx_tilde = repmat(hx_shifted, [Np+1, 1]);
 
