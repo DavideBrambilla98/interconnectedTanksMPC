@@ -51,7 +51,7 @@ ylabel("$h_4$" , Interpreter="latex")
 %% N-step controllable set
 
 % Orizzonte di predizione fissato
-N = 10;
+N = 2;
 fprintf('\n--- Calcolo del %d-step controllable set ---\n', N);
 [Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
 fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
@@ -198,11 +198,11 @@ h_cis_24_shifted = CIS_24_shifted.plot();
 h_traj_24 = plot(x2_real, x4_real, 'Color',[0 0 0.5]);
 h_traj_dots_24 = scatter(x2_real, x4_real, 'cyan');
 
-title('Traiettoria del sistema nel piano $(h_1, h_3)$', 'Interpreter', 'latex')
+title('Traiettoria del sistema nel piano $(h_2, h_4)$', 'Interpreter', 'latex')
 xlabel("$h_2$ [cm]", 'Interpreter','latex')
 ylabel("$h_4$ [cm]", 'Interpreter','latex')
 
-legend([h_cis_24_shifted, h_npstep_13_shifted, h_traj_24, h_traj_dots_24], ...
+legend([h_cis_24_shifted, h_npstep_24_shifted, h_traj_24, h_traj_dots_24], ...
     {'CIS', sprintf('%d-step set', N), 'Traiettoria', 'Sample'}, ...
     'Interpreter','latex')
 
