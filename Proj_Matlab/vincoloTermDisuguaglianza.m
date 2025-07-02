@@ -14,8 +14,8 @@ addpath('funzioni');
 modello;
 
 % Matrici del costo quadratico
-Q = 100*eye(4); % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
-R = eye(2); % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
+Q = diag([1, 1, 100, 100]); % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
+R = 100*eye(2); % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
 % Control invariant set CIS_H*x <= CIS_h
 [CIS_H, CIS_h] = cis(sys_d.A, sys_d.B, zeros(4,1), zeros(2,1), Hx, hx, Hu, hu, Q, R); % si passano zeri come riferimento poichè il sistema è traslato sul riferimento
 
@@ -51,10 +51,10 @@ ylabel("$h_4$" , Interpreter="latex")
 %% N-step controllable set
 
 % Orizzonte di predizione fissato
-N = 2;
+N = 4;
 fprintf('\n--- Calcolo del %d-step controllable set ---\n', N);
 [Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
-fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
+%fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
 
 % Costruzione poliedro
 Np_steps_set = Polyhedron(Np_steps_H, Np_steps_h);
@@ -88,32 +88,6 @@ legend([h_cis_24, h_nsteps_24], ...
 %% MPC
 T_sim = 60;
 mpc = MPC(sys_d.A,sys_d.B,Hx,hx,Hu,hu,CIS_H,CIS_h,x_ref,u_ref,Q,R,N);
-
-    
-%% Verifica dei vincoli
-
-disp('--- Verifica vincoli MPC ---');
-disp('Max valore b_ineq_base:');
-disp(max(mpc.b_ineq_base));
-disp('Min valore b_ineq_base:');
-disp(min(mpc.b_ineq_base));
-
-disp('Dimensioni A_ineq:');
-disp(size(mpc.A_ineq));
-disp('Dimensioni b_ineq_base:');
-disp(size(mpc.b_ineq_base));
-
-
-%vincoli centrati
-disp('hx originali:');
-disp(hx);
-disp('hx centrati:');
-disp(hx - Hx*x_ref);
-
-disp('hu originali:');
-disp(hu);
-disp('hu centrati:');
-disp(hu - Hu*u_ref);
 
 %% Simulazione MPC con sistema centrato e dinamica non lineare reale
 
@@ -211,16 +185,19 @@ legend([h_cis_24_shifted, h_npstep_24_shifted, h_traj_24, h_traj_dots_24], ...
 % Andamento degli stati
 figure;
 subplot(2,1,1);
-plot(0:T_sim, x_log');
+hold on;
+plot((0:T_sim)*Ts/60, x_log' + x_ref');
 title('Andamento degli stati');
-xlabel('Tempo [step]');
+xlabel('Tempo [min]');
 ylabel('Stato');
 legend('x_1','x_2','x_3','x_4');
+grid on
 
 % Andamento degli ingressi
 subplot(2,1,2);
-plot(1:T_sim, u_log');
+plot((1:T_sim)*Ts/60, u_log');
 title('Ingressi di controllo');
-xlabel('Tempo [step]');
+xlabel('Tempo [min]');
 ylabel('Ingresso');
 legend('u_1','u_2');
+grid on

@@ -10,8 +10,8 @@ H_ii_steps = H_target;
 h_ii_steps = h_target;
 
 for ii=1:N
-    disp('iterazione')
-    disp(ii);
+    
+fprintf('Iterazione %d\n', ii);
     %   Computazione in R^(n+m)
     temp = Polyhedron('A',[H_ii_steps*A H_ii_steps*B; ...
         zeros(size(Hu,1),n) Hu],'b',[h_ii_steps; hu]);
@@ -21,6 +21,8 @@ for ii=1:N
     %   Intersezione con X := {x | Hx*x <= hx}
     H_ii_steps = [temp.A; Hx];
     h_ii_steps = [temp.b; hx];
+
+    fprintf('Vincoli nel %d-step set: %d\n', N, size(H_ii_steps,1));
 end
 
 H_nsteps = H_ii_steps;

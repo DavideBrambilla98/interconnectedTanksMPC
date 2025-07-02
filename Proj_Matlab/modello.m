@@ -95,7 +95,7 @@ disp(eig(A_lin));
 
 %% Discretizzazione
 
-Ts = 20; % [s]
+Ts = 15; % [s]
 sys_d = c2d(sys_lineare, Ts);
 
 disp('--- Stabilità del sistema discretizzato ---');

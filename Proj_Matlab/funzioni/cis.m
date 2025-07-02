@@ -33,8 +33,8 @@ while CIS_poly_prev.isEmptySet || CIS_poly_prev ~= CIS_poly_curr
     G_hat = [CIS_poly_curr.A * A_lqr; F];
     g_hat = [CIS_poly_prev.b + CIS_poly_curr.A*B*(K*x_ref - u_ref); f];
     CIS_poly_curr = Polyhedron(G_hat,g_hat);
-    disp('iterazione')
-    disp(i);
+fprintf('Iterazione %d\n', i);
+
 end
 
 %   Disequazioni che descrivono il CIS
