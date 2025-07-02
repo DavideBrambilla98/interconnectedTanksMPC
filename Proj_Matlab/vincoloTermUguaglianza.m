@@ -87,18 +87,18 @@ x_log_real = x_log + x_ref;  % [n x (T_sim+1)]
 % Andamento degli stati
 figure;
 subplot(2,1,1);
-plot(0:T_sim, x_log_real');
+plot((0:T_sim)*Ts/60, x_log_real');
 title('Andamento degli stati');
-xlabel('Tempo [s]');
+xlabel('Tempo [min]');
 ylabel('Stati [{$h_i$}]');
 legend({'$h_1$', '$h_2$', '$h_3$', '$h_4$'}, 'Interpreter','latex');
 grid on;
 
 % Andamento degli ingressi
 subplot(2,1,2);
-plot(1:T_sim, u_log');
+plot((1:T_sim)*Ts/60, u_log');
 title('Ingressi di controllo');
-xlabel('Tempo [$s$]');
+xlabel('Tempo [min]');
 ylabel('Ingressi [$u_i$]');
 legend({'$v_1$', '$v_2$'}, 'Interpreter','latex');
 grid on;
