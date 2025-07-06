@@ -14,8 +14,8 @@ addpath('funzioni');
 modello;
 
 % Matrici del costo quadratico
-Q = diag([1, 1, 100, 100]); % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
-R = 100*eye(2); % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
+Q = diag([1, 1, 100, 100]);  % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
+R = 100*eye(2);                 % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
 % Control invariant set CIS_H*x <= CIS_h
 [CIS_H, CIS_h] = cis(sys_d.A, sys_d.B, zeros(4,1), zeros(2,1), Hx, hx, Hu, hu, Q, R); % si passano zeri come riferimento poichè il sistema è traslato sul riferimento
 
