@@ -50,13 +50,24 @@ sgtitle("Simulazione del Quadruple Tank Process")
 
 subplot(2,1,1)
 plot(tt, xx(:, 1:4), 'LineWidth', 1.5); hold on;
+
+% Aggiunta delle linee di riferimento per ciascun serbatoio
+colors = lines(4);  % palette colori per coerenza visiva
+
+for i = 1:4
+    yline(x_ref(i), '--', 'Color', colors(i,:), ...
+        'DisplayName', sprintf('h%d ref', i), ...
+        'LabelVerticalAlignment','middle');
+end
+
+% Limiti e dettagli del grafico
 yline(0.5, '--r', 'Min', 'LabelVerticalAlignment','bottom');
 yline(20, '--r', 'Max', 'LabelVerticalAlignment','top');
-ylim([0 30])
+ylim([0 20])
 title("Livelli d'acqua nei serbatoi")
 ylabel("Livello [cm]")
 xlabel("Tempo [min]")
-legend(["h1", "h2", "h3", "h4"], 'Location', 'best')
+legend(["h1", "h2", "h3", "h4", "h1 ref", "h2 ref", "h3 ref", "h4 ref", "Min", "Max"], 'Location', 'best')
 grid on
 
 %% Linearizzazione simbolica

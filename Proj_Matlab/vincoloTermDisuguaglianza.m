@@ -15,7 +15,7 @@ modello;
 
 % Matrici del costo quadratico
 Q = diag([1, 1, 100, 100]);  % Penalizza lo stato (quanto gli stati h1,h2,h3,h4 devono essere vicino al riferimento)
-R = 100*eye(2);                 % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
+R = 1*eye(2);                 % Penalizza l'ingresso (quanto limitare l'uso degli ingressi v1 e v2)
 % Control invariant set CIS_H*x <= CIS_h
 [CIS_H, CIS_h] = cis(sys_d.A, sys_d.B, zeros(4,1), zeros(2,1), Hx, hx, Hu, hu, Q, R); % si passano zeri come riferimento poichè il sistema è traslato sul riferimento
 
@@ -51,7 +51,7 @@ ylabel("$h_4$" , Interpreter="latex")
 %% N-step controllable set
 
 % Orizzonte di predizione fissato
-N = 4;
+N = 3;
 fprintf('\n--- Calcolo del %d-step controllable set ---\n', N);
 [Np_steps_H, Np_steps_h] = controllable_set(Hx, hx, Hu, hu, CIS_H, CIS_h, sys_d.A, sys_d.B, N);
 %fprintf('Vincoli nel %d-step set: %d\n', N, size(Np_steps_H,1));
@@ -86,7 +86,7 @@ legend([h_cis_24, h_nsteps_24], ...
     'Interpreter','latex')
 
 %% MPC
-T_sim = 60;
+T_sim = 120;
 mpc = MPC(sys_d.A,sys_d.B,Hx,hx,Hu,hu,CIS_H,CIS_h,x_ref,u_ref,Q,R,N);
 
 %% Simulazione MPC con sistema centrato e dinamica non lineare reale
@@ -186,12 +186,22 @@ legend([h_cis_24_shifted, h_npstep_24_shifted, h_traj_24, h_traj_dots_24], ...
 figure;
 subplot(2,1,1);
 hold on;
+
+% Plot degli stati con riferimento sommato
 plot((0:T_sim)*Ts/60, x_log' + x_ref');
+
+% Aggiunta delle linee di riferimento
+xline = (0:T_sim)*Ts/60;
+for i = 1:4
+    plot(xline, ones(size(xline)) * x_ref(i), '--', 'DisplayName', sprintf('x_%d ref', i));
+end
+
 title('Andamento degli stati');
 xlabel('Tempo [min]');
 ylabel('Stato');
-legend('x_1','x_2','x_3','x_4');
-grid on
+legend('x_1','x_2','x_3','x_4','x_1 ref','x_2 ref','x_3 ref','x_4 ref');
+grid on;
+
 
 % Andamento degli ingressi
 subplot(2,1,2);
