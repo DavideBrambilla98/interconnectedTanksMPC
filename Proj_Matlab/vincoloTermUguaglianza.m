@@ -8,18 +8,18 @@ set(0,'DefaultFigureWindowStyle', 'docked')
 set(0,'defaulttextInterpreter','latex')
 rng('default');
 
-Ts = 60; % Tempo di campionamento
+Ts = 5; % Tempo di campionamento
 
 % Modello del sistema
 addpath('funzioni');
 modello;
 
 % Matrici costo
-Q = 1e1 * eye(4);
-R = 1e3 * eye(2);
+Q = diag([1000, 1000, 1000, 1000]);
+R = 1 * eye(2);
 
 % Orizzonte
-N = 10;
+N = 15;
 
 % Vincoli su stati e ingressi
 
